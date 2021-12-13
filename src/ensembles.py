@@ -25,9 +25,6 @@ class RandomForestMSE:
         self.trees_param = trees_parameters
         self.models = []
         self.features = []
-        self.rmse_train = []
-        self.times = []
-        self.rmse_val = []
 
     def fit(self, X, y, X_val=None, y_val=None):
         """
@@ -43,12 +40,15 @@ class RandomForestMSE:
         y_val : numpy ndarray
             Array of size n_val_objects
         """
-        rmse_val_bool = False
-        if (X_val is not None) and (y_val is not None):
-            rmse_val_bool = True
+        rmse_val = False
+        if not(X_val is None) and not(y_val is None):
+            rmse_val = True
+            loss_val = []
             y_pred_val = 0
 
+        loss_train = []
         y_pred_train = 0
+        times = []
         cur_time = 0
 
         if self.feature_s_s is None:
@@ -64,20 +64,20 @@ class RandomForestMSE:
             regressor = DecisionTreeRegressor(max_depth=self.max_depth, **self.trees_param)
             regressor.fit(x_train, y_train)
             self.models.append(regressor)
-            if rmse_val_bool:
+            if rmse_val:
                 y_pred_val += regressor.predict(X_val[:, feat_idx])
-                self.rmse_val.append(np.sqrt(((y_pred_val / (i + 1) - y_val) ** 2).sum() / X_val.shape[0]))
+                loss_val.append(np.sqrt((y_pred_val/(i + 1) - y) ** 2 / X_val.shape[0]))
 
             y_pred_train += regressor.predict(x_train)
-            self.rmse_train.append(np.sqrt(((y_pred_train / (i + 1) - y) ** 2).sum() / x_train.shape[0]))
+            loss_train.append(np.sqrt((y_pred_train/(i + 1) - y) ** 2 / x_train.shape[0]))
 
             cur_time += time() - start
-            self.times.append(cur_time)
+            times.append(cur_time)
 
-        if rmse_val_bool:
-            return self.rmse_train, self.rmse_val, self.times
+        if rmse_val:
+            return loss_train, loss_val, times
         else:
-            return self.rmse_train, self.times
+            return loss_train, times
 
     def predict(self, X):
         """
@@ -115,17 +115,6 @@ class GradientBoostingMSE:
         feature_subsample_size : float
             The size of feature set for each tree. If None then use one-third of all features.
         """
-        self.n_estimators = n_estimators
-        self.learning_rate = learning_rate
-        self.max_depth = max_depth
-        self.feature_s_s = feature_subsample_size
-        self.trees_param = trees_parameters
-        self.models = []
-        self.features = []
-        self.alphas = []
-        self.rmse_train = []
-        self.times = []
-        self.rmse_val = []
 
     def fit(self, X, y, X_val=None, y_val=None):
         """
@@ -135,47 +124,6 @@ class GradientBoostingMSE:
         y : numpy ndarray
             Array of size n_objects
         """
-        if self.feature_s_s is None:
-            self.feature_s_s = X.shape[1] // 3
-
-        f = 0
-        f_val = 0
-
-        rmse_val_bool = False
-        if (X_val is not None) and (y_val is not None):
-            rmse_val_bool = True
-
-        cur_time = 0
-
-        def loss(alpha, y, f, y_pred):
-            return ((f + alpha * y_pred - y) ** 2).sum()
-
-        for i in range(self.n_estimators):
-            start = time()
-            feat_idx = np.random.choice(X.shape[1], self.feature_s_s, replace=False)
-            self.features.append(feat_idx)
-            regressor = DecisionTreeRegressor(max_depth=self.max_depth, **self.trees_param)
-            self.models.append(regressor)
-            x_train = X[:, feat_idx]
-            regressor.fit(x_train, y - f)
-            y_pred = regressor.predict(x_train)
-            alpha = minimize_scalar(loss, args=(y, f, y_pred)).x
-            self.alphas.append(alpha)
-            if rmse_val_bool:
-                y_pred_val = regressor.predict(X_val[:, feat_idx])
-                f_val += alpha * self.learning_rate * y_pred_val
-                self.rmse_val.append(np.sqrt(((f_val - y_val) ** 2).sum() / X_val.shape[0]))
-
-            f += alpha * self.learning_rate * y_pred
-            self.rmse_train.append(np.sqrt(((f - y) ** 2).sum() / x_train.shape[0]))
-
-            cur_time += time() - start
-            self.times.append(cur_time)
-
-        if rmse_val_bool:
-            return self.rmse_train, self.rmse_val, self.times
-        else:
-            return self.rmse_train, self.times
 
     def predict(self, X):
         """
@@ -187,10 +135,3 @@ class GradientBoostingMSE:
         y : numpy ndarray
             Array of size n_objects
         """
-        res = 0
-        i = 0
-        for model in self.models:
-            y_pred = model.predict(X[:, self.features[i]])
-            res += y_pred * self.alphas[i] * self.learning_rate
-            i += 1
-        return res
