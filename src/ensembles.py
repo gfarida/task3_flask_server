@@ -68,7 +68,7 @@ class RandomForestMSE:
                 y_pred_val += regressor.predict(X_val[:, feat_idx])
                 self.rmse_val.append(np.sqrt(((y_pred_val / (i + 1) - y_val) ** 2).sum() / X_val.shape[0]))
 
-            y_pred_train += regressor.predict(x_train)
+            y_pred_train += regressor.predict(X[:, feat_idx])
             self.rmse_train.append(np.sqrt(((y_pred_train / (i + 1) - y) ** 2).sum() / x_train.shape[0]))
 
             cur_time += time() - start
