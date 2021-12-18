@@ -4,11 +4,11 @@ import datetime
 
 import numpy as np
 
-import plotly
-import plotly.subplots
-import plotly.graph_objects as go
-from shapely.geometry.polygon import Point
-from shapely.geometry.polygon import Polygon
+# import plotly
+# import plotly.subplots
+# import plotly.graph_objects as go
+# from shapely.geometry.polygon import Point
+# from shapely.geometry.polygon import Polygon
 
 from collections import namedtuple
 from flask_wtf import FlaskForm
@@ -20,7 +20,7 @@ from flask_wtf.file import FileAllowed
 from wtforms.validators import DataRequired
 from wtforms import StringField, SubmitField, FileField
 
-from utils import polygon_random_point
+# from utils import polygon_random_point
 
 
 app = Flask(__name__, template_folder='html')
