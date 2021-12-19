@@ -18,7 +18,7 @@ from flask import render_template, redirect
 
 from flask_wtf.file import FileAllowed
 from wtforms.validators import DataRequired
-from wtforms import StringField, SubmitField, FileField
+from wtforms import StringField, SubmitField, FileField, SelectField
 
 # from utils import polygon_random_point
 
@@ -35,6 +35,8 @@ class Message:
     header = ''
     text = ''
 
+class Model(FlaskForm):
+    text = StringField('something', validators=[DataRequired()])
 
 class TextForm(FlaskForm):
     text = StringField('Text', validators=[DataRequired()])
@@ -87,16 +89,20 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/index_js')
-def get_index():
-    return '<html><center><script>document.write("Hello, i`am Flask Server!")</script></center></html>'
-
-
 @app.route('/clear_messages', methods=['POST'])
 def clear_messages():
     messages.clear()
     return redirect(url_for('prepare_message'))
 
+@app.route('/RandomForest', methods=['GET', 'POST'])
+def RF_model():
+    model1 = Model()
+    return render_template('from_form.html', form=model1)
+
+@app.route('/GradienBoosting', methods=['GET', 'POST'])
+def GB_model():
+    model2 = Model()
+    return render_template('from_form.html', form=model2)
 
 @app.route('/messages', methods=['GET', 'POST'])
 def prepare_message():
@@ -110,6 +116,10 @@ def prepare_message():
 
     return render_template('messages.html', messages=messages)
 
+@app.route('/models', methods=['GET', 'POST'])
+def model():
+    models = Model()
+    return render_template('from_form.html', form=models)
 
 @app.route('/result', methods=['GET', 'POST'])
 def get_result():

@@ -4,21 +4,65 @@
     <meta charset="UTF-8">
     <title>Выбор алгоритма</title>
     <style>
-   body {
-    background: #E0FFFF; /* Цвет фона */
-    color: #CD5C5C; /* Цвет текста */
-   }
-   A {
-    color: #008080; /* Цвет активных ссылок */
-   }
-  </style>
+       body {
+        background: #E6E6FA; /* Цвет фона */
+       }
+       .colortext {
+         color: #CD5C5C; /* Красный цвет выделения */
+       }
+       .text {
+        text-align:  center;
+       }
+       A {
+           color: white;
+       }
+       p {
+            border: 1px #CD5C5C;
+            padding: 10px;
+       }
+    </style>
 </head>
 <body>
 
-<p><h1>Привет! <br> Здесь вы можете выбрать один из предложенных алгоритмов</h1><p>
-<ul>
-<li><p><big><big><a href="{{ url_for('prepare_message') }}">Random Forest</a></p></li></big></big>
-<li><p><big><big><a href="{{ url_for('prepare_message') }}">Gradient Boosting</a></p></li></big></big>
-</ul>
+<p><h1><span class="colortext"><center> Выбор алгоритма</center><br></span></h1></p>
+<div class="text">
+    <h2>   Привет! Этот сайт предназначен для быстрого взаимодействия с моделями машинного обучения.
+        Вы сможете создать модель, выбрать для нее нужные гиперпараметры, загрузить свой датасет и
+        получить предсказание для целевой переменной! Также можно узнать значение RMSE
+        на каждой итерации обучения и др. <br> Для начала выберите алгоритм, доступны два - Random Forest (случайный лес),
+        Gradient Boosting (градиентный бустинг над деревьями).<br> </h2>
+</div>
+<br>
+<br>
+<br>
+<br>
+<div style="display: inline;" align="center">
+      <div style="float: left;">
+            <button style="color: white;
+                           background-color: #CD5C5C;
+                           margin-left: 300px;
+                           margin-end: 300px;
+                           padding: 15px 32px;
+                           text-align: center;
+                           text-decoration: none;
+                           border-radius: 4px;
+                           display: inline-block;
+                           font-size: 100%;">
+                <big><big><a href="{{ url_for('RF_model') }}">Random Forest</a></big></big></button>
+      </div>
+      <div style="float: right;">
+            <button style="color: white;
+                           background-color: #CD5C5C;
+                           margin-right: 300px;
+                           padding: 15px 32px;
+                           text-align: center;
+                           text-decoration: none;
+                           border-radius: 4px;
+                           display: inline-block;
+                           font-size: 100%;">
+                <big><big><a href="{{ url_for('GB_model') }}">Gradient Boosting</a></big></big></button>
+     </div>
+</div>
+
 </body>
 </html>
