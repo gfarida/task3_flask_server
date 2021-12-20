@@ -10,15 +10,18 @@ import numpy as np
 # from shapely.geometry.polygon import Point
 # from shapely.geometry.polygon import Polygon
 
+import pandas as pd
+
 from collections import namedtuple
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
-from flask import Flask, request, url_for
+from flask import Flask, request, url_for, flash
 from flask import render_template, redirect
+from wtforms import validators
 
 from flask_wtf.file import FileAllowed
 from wtforms.validators import DataRequired
-from wtforms import StringField, SubmitField, FileField, SelectField
+from wtforms import StringField, SubmitField, FileField, SelectField, TextAreaField, IntegerField, DecimalField
 
 # from utils import polygon_random_point
 
@@ -30,18 +33,36 @@ data_path = './../data'
 Bootstrap(app)
 messages = []
 
-
 class Message:
     header = ''
     text = ''
 
-class Model(FlaskForm):
-    text = StringField('something', validators=[DataRequired()])
+class RF(FlaskForm):
+    n_estimators = IntegerField('n_estimators:', validators=[DataRequired(), validators.NumberRange(min=1, max=5000)])
+    depth = IntegerField('max_depth:', [DataRequired(), validators.NumberRange(min=1, max=50)])
+    fss = IntegerField('feature_subsample_size:', [DataRequired(), validators.NumberRange(min=1, max=30000)])
+    data_train = FileField('Train data', validators=[
+        DataRequired('Specify file'),
+        FileAllowed(['csv'], 'CSV only!')
+    ])
+    data_val = FileField('Validation data', validators=[
+        FileAllowed(['csv'], 'CSV only!')
+    ])
+    submit = SubmitField("Send")
 
-class TextForm(FlaskForm):
-    text = StringField('Text', validators=[DataRequired()])
-    submit = SubmitField('Get Result')
-
+class GB(FlaskForm):
+    n_estimators = IntegerField('n_estimators:', [DataRequired(), validators.NumberRange(min=1, max=5000)])
+    depth = IntegerField('max_depth:', [DataRequired(), validators.NumberRange(min=1, max=50)])
+    fss = IntegerField('feature_subsample_size:', [DataRequired(), validators.NumberRange(min=1, max=30000)])
+    lr = DecimalField('learning_rate:', [DataRequired(), validators.NumberRange(min=0.001, max=1)])
+    data = FileField('Train data', validators=[
+        DataRequired('Specify file'),
+        FileAllowed(['csv'], 'CSV only!')
+    ])
+    data_val = FileField('Validation data', validators=[
+        FileAllowed(['csv'], 'CSV only!')
+    ])
+    submit = SubmitField("Send")
 
 class Response(FlaskForm):
     score = StringField('Score', validators=[DataRequired()])
@@ -86,7 +107,7 @@ def file():
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html')
+    return render_template('main_page.html')
 
 
 @app.route('/clear_messages', methods=['POST'])
@@ -96,13 +117,43 @@ def clear_messages():
 
 @app.route('/RandomForest', methods=['GET', 'POST'])
 def RF_model():
-    model1 = Model()
-    return render_template('from_form.html', form=model1)
+    model_RF = RF()
+    if model_RF.validate_on_submit():
+        data_train = pd.read_csv(model_RF.data_train.data)
+        if model_RF.fss.data > data_train.shape[1]:
+            flash("Размерность пространства признаков меньше, чем Вы выбрали!")
+            return redirect(url_for('RF_model'))
+        if model_RF.data_val.data.filename != "":
+            flash("y val")
+            data_val = pd.read_csv(model_RF.data_val.data)
+            y_val = data_val["TARGET"]
+            X_val = data_val.drop("TARGET", axis=1)
+        y_train = data_train["TARGET"]
+        X_train = data_train.drop("TARGET", axis=1)
+        return redirect(url_for('get_predict', model = model_RF))
+    return render_template('RF.html', title = 'Random Forest', form=model_RF)
 
-@app.route('/GradienBoosting', methods=['GET', 'POST'])
+@app.route('/GradientBoosting', methods=['GET', 'POST'])
 def GB_model():
-    model2 = Model()
-    return render_template('from_form.html', form=model2)
+    model_GB = GB()
+    if model_GB.validate_on_submit():
+        data_train = pd.read_csv(model_GB.data_train.data)
+        if model_GB.fss.data > data_train.shape[1]:
+            flash("Размерность пространства признаков меньше, чем Вы выбрали!")
+            return redirect(url_for('GB_model'))
+        if model_GB.data_val.data.filename != "":
+            flash("y val")
+            data_val = pd.read_csv(model_GB.data_val.data)
+            y_val = data_val["TARGET"]
+            X_val = data_val.drop("TARGET", axis=1)
+        y_train = data_train["TARGET"]
+        X_train = data_train.drop("TARGET", axis=1)
+        return redirect(url_for('get_predict'))
+    return render_template('GB.html', title = 'Gradient Boosting', form=model_GB)
+
+@app.route('/predict', methods=['GET', 'POST'])
+def get_predict():
+    return render_template
 
 @app.route('/messages', methods=['GET', 'POST'])
 def prepare_message():
