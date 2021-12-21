@@ -7,7 +7,7 @@ RUN chown -R root:root /root/FlaskServer
 WORKDIR /root/FlaskServer/src
 RUN pip3 install -r requirements.txt
 
-COPY FlaskServer/src/ ./
+COPY src/ ./
 RUN chown -R root:root ./
 
 ENV SECRET_KEY mmp
