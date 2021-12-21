@@ -29,7 +29,7 @@ from wtforms import StringField, SubmitField, FileField, SelectField, TextAreaFi
 
 app = Flask(__name__, template_folder='html')
 app.config['BOOTSTRAP_SERVE_LOCAL'] = True
-app.config['SECRET_KEY'] = 'hello'
+app.config['SECRET_KEY'] = 'mmp'
 data_path = './../data'
 Bootstrap(app)
 messages = []
