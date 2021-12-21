@@ -1,0 +1,22 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<div class="container">
+  <h3>Выберите дальнейшие действия</h3>
+  <hr>
+  <h4>Для вывода информации о модели:  гиперпараметрах модели, датасете, на котором она обучалась, значении функции
+    потерь на обучающей и валидационной (при наличии) выборках после каждой итерации - нажмите на кнопу <b>"Info"</b>. <br><br>Для
+    получения предсказания загрузите файл с тестовой выборкой нужного формата (за
+    исключением отсутствия столбца с целевой переменной) и нажмите на кнопку
+  <b>"Predict"</b></h4>
+  <hr>
+      <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('info') }}"" role="button">Info</a>
+  <hr>
+    {{ wtf.quick_form(form) }}
+  <br>
+  <a class="btn btn-primary " href="{{ url_for('index') }}" role="button">Main page</a>
+  <hr>
+  <p>Machine learning is cool!</p>
+</div>
+{% endblock %}

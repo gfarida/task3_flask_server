@@ -1,0 +1,22 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<div class="container">
+  <h3>Random Forest</h3>
+    <hr>
+  <h4>Введите параметры для модели и загрузите обучающую выборку (файл .csv, в котором один из столбцов задаёт целевую
+      переменную, а подмножество остальных столбцов задает признаки объектов выборки).
+    Столбец с целевой переменной обязательно должен называться <b>"TARGET"</b>.</h4>
+  <h4>При вводе 0 используется None. По желанию можно загрузить валидационную выборку того же формата</h4>
+  {% for mesg in get_flashed_messages() %}
+      <h2><span style="color: darkred;">{{ mesg }}</span></h2>
+      {% endfor %}
+  <hr>
+    {{ wtf.quick_form(form) }}
+  <br>
+  <a class="btn btn-primary " href="{{ url_for('index') }}" role="button">Main page</a>
+  <hr>
+  <p>Machine learning is cool!</p>
+</div>
+{% endblock %}

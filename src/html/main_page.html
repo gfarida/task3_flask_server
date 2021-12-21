@@ -1,0 +1,18 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<div class="container">
+  <h3>Выбор алгоритма</h3>
+    <hr>
+  <h4>Привет! Этот сайт предназначен для быстрого взаимодействия с моделями машинного обучения. Вы сможете создать
+    модель, выбрать для нее нужные гиперпараметры, загрузить свой датасет и получить предсказание для целевой
+    переменной! Также можно узнать значение RMSE на каждой итерации обучения и др. <br><br> Для начала выберите алгоритм,
+    доступны два - Random Forest (случайный лес), Gradient Boosting (градиентный бустинг над деревьями).</h4>
+  <hr>
+    <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('RF_model') }}"" role="button">Random Forest</a>
+    <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('GB_model') }}"" role="button">Gradient Boosting</a>
+  <hr>
+  <p>Machine learning is cool!</p>
+</div>
+{% endblock %}

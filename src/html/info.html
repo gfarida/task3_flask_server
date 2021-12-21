@@ -1,0 +1,36 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<div class="container">
+  <h3>Дополнительная информация</h3>
+  <hr>
+  <h4><b>n_estimators: </b> {{form.n_estimators.data}}</h4>
+  <h4><b>max_depth: </b> {{form.depth.data}}</h4>
+  <h4><b>feature_subsample_size: </b> {{form.fss.data}}</h4>
+  {% if type %}
+      <h4><b>learning_rate: </b> {{form.lr.data}}</h4>
+  {% endif %}
+  <h4><b>Датасет, на котором производилось обучение: </b> {{form.data_train.data.filename}}</h4>
+  <hr>
+  <h4><b>Время обучения модели: {{'{:.4f}'.format(time)}} сек</b>
+  <h4><b>Значения RMSE на обучающей выборке на каждой итерации:</b></h4>
+    <ol>
+  {% for i in range(0, len) %}
+    <li>{{rmse_train[i]}}</li>
+  {% endfor %}
+    </ol>
+    {% if val %}
+      <h4><b>Значения RMSE на валидационной выборке на каждой итерации: </b> </h4>
+        <ol>
+        {% for i in range(0, len) %}
+          <li>{{rmse_val[i]}}</li>
+        {% endfor %}
+        </ol>
+    {% endif %}
+  <a class="btn btn-primary " href="{{ url_for('index') }}" role="button">Main page</a>
+  <a class="btn btn-primary" href="{{ url_for('get_predict') }}" role="button">Back</a>
+  <hr>
+  <p>Machine learning is cool!</p>
+</div>
+{% endblock %}

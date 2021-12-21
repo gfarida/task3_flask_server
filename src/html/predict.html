@@ -1,0 +1,18 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<div class="container">
+  <h3>Предсказание целевой переменной</h3>
+    <hr>
+  <h4><b>Значения целевой переменной: </b> </h4>
+  {% for i in range(0, len) %}
+    y_predict{{[i]}} = {{y_pred[i]}}<br>
+  {% endfor %}
+  <a class="btn btn-primary " href="{{ url_for('index') }}" role="button">Main page</a>
+  <a class="btn btn-primary" href="{{ url_for('get_predict') }}" role="button">Back</a>
+    <a class="btn btn-primary" href="{{ url_for('info') }}" role="button">More info</a>
+  <hr>
+  <p>Machine learning is cool!</p>
+</div>
+{% endblock %}
