@@ -99,7 +99,7 @@ class RandomForestMSE:
 
 class GradientBoostingMSE:
     def __init__(
-        self, n_estimators, learning_rate=0.1, max_depth=5, feature_subsample_size=None,
+        self, n_estimators, learning_rate=0.1, max_depth=None, feature_subsample_size=None,
         **trees_parameters
     ):
         """
