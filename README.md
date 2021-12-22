@@ -10,7 +10,7 @@
 <br>
 Второй способ (загрузка контейнера из Dockerhub):<br>
 `sudo docker pull gfarida/dockerhub:flask_server_img` - скачивание контейнера<br>
-`sudo docker run -p 5000:5000 -i -t --rm gfarida/dockerhub/flask_server_img`<br>
+`sudo docker run -p 5000:5000 -i -t --rm gfarida/dockerhub/flask_server_img` - запуск контейнера и самого сервера, далее необходимо перейти по ссылке из консоли или набрать ее самим.<br>
 <br>
 <br>
 Структруа сайта:<br>
